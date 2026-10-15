@@ -6,6 +6,7 @@ import { ConnectionService } from './connections.js';
 import { connectionTools } from './connection-tools.js';
 import { connectionActionTool } from '../shared/connection-types.js';
 import { pageAccess, pageTools } from './page-tools.js';
+import { earnerTools, earnerToolsEnv, type Research } from './earner-tools.js';
 import { AbstractAgent } from '@ag-ui/client';
 import { type BaseEvent, type RunAgentInput, EventType } from '@ag-ui/core';
 import {
@@ -206,6 +207,7 @@ export class DotAgent extends AbstractAgent {
                 }),
               ]
             : [];
+        let research: Research | undefined;
         if (
           dot.researchAllowed &&
           initialSettings.researchAllowed &&
@@ -247,6 +249,8 @@ export class DotAgent extends AbstractAgent {
             });
             return { sources, limitations };
           };
+          research = (objective, queries) =>
+            capture(objective, undefined, queries);
           tools.push(
             defineTool({
               name: 'search_web',
@@ -315,6 +319,7 @@ export class DotAgent extends AbstractAgent {
         const serverTools = [
           ...tools,
           ...pageTools(pages),
+          ...earnerTools(dot.id, earnerToolsEnv(process.env), research),
           ...(computer.configured
             ? computerTools(computer, dot.id, check, controller.signal)
             : []),
