@@ -65,12 +65,13 @@ export class Runner {
         controller.abort(new Error('Run ownership check failed.'));
       }
     }, 100);
+    const limitSeconds = Number(process.env.TURN_TIME_LIMIT_SECONDS || 90);
     const timeout = setTimeout(
       () =>
         controller.abort(
-          new Error('Research exceeded the 90 second time limit.'),
+          new Error(`Research exceeded the ${limitSeconds} second time limit.`),
         ),
-      90_000,
+      limitSeconds * 1000,
     );
     try {
       const settings = this.store.settings();

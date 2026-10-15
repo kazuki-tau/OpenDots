@@ -29,7 +29,9 @@ const channelError = () => ({
   message:
     'OpenDots could not complete this request. Please check the app and try again.',
 });
-const TURN_TIME_LIMIT_MS = 90_000;
+// Local models can need longer turns; override with TURN_TIME_LIMIT_SECONDS.
+const TURN_TIME_LIMIT_MS =
+  Number(process.env.TURN_TIME_LIMIT_SECONDS || 90) * 1000;
 export class DotAgent extends AbstractAgent {
   private inner?: BuiltInAgent;
   private controller?: AbortController;
